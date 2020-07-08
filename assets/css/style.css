@@ -1,0 +1,14 @@
+:root {
+  --sans-font: "Open Sans", Arial, Helvetica, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sans-font);
+  display: inline;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "EB Garamond", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  /*outline: 1px solid red;*/
+}

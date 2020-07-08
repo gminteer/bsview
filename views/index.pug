@@ -1,0 +1,73 @@
+doctype html
+html(lang='en')
+html
+  head
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open Sans')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=EB Garamond')
+    link(rel='stylesheet', href='assets/css/style.css')
+    title bsView
+  body
+    header
+      h1= roster.name
+      each cost in Object.values(roster.costs)
+        if roster.costLimits[cost.typeId]
+          span #{cost.value}/#{roster.costLimits[cost.typeId].value} #{cost.name}
+        else
+          span #{cost.value} #{cost.name}
+    nav.forces
+      ul
+        each fKey in Object.keys(roster.forces)
+          li
+            a(href=`#${fKey}`)= roster.forces[fKey].name
+    each force in Object.values(roster.forces)
+      section.force-container
+        h2(id=`${force.id}`) #{force.name} (#{force.catalogueName})
+        nav.unit-types
+          ul
+            each catKey in Object.keys(force.unitsByCategory)
+              li
+                a(href=`#${force.id}-${catKey}`)= force.categoryNames[catKey]
+        p
+          h3 Rules
+          each rule in force.rules
+            h4= rule.name
+            p= rule.description
+            if rule.costs
+              each cost in Object.values(rule.costs)
+                if Number(cost.value) > 0
+                  span #{cost.value} #{cost.name}
+      each catKey in Object.keys(force.unitsByCategory)
+        h2(id=`${force.id}-${catKey}`)= force.categoryNames[catKey]
+        each unit in force.unitsByCategory[catKey]
+          section.unit-block
+            h3= unit.name
+            p
+              h4 Selections
+              each selection in unit.selections
+                span= selection
+            if unit.categories
+              p
+                h4 Categories
+                each category in unit.categories
+                  span= category.name
+            each table of Object.values(unit.tables)
+              - let columnNames = unit.tableColumns[`${table[0].typeId}`]
+              - let displayCount = false
+              each row in table
+                if row.count > 1
+                  - displayCount = true
+              table
+                thead
+                  tr
+                    if displayCount
+                      th(id='count') Count
+                    th(id=`${columnNames.typeId}`)= columnNames.name
+                    each column in columnNames.columns
+                      th(id=`${column.typeId}`)= column.name
+                each row in table
+                  tbody
+                    if displayCount
+                      td(headers='count')= row.count
+                    td(headers=`${row.typeId}`)= row.name
+                    each cell in row.cells
+                      td(headers=`${cell.typeId}`)= cell.value

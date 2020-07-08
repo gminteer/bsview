@@ -1,0 +1,29 @@
+{
+  "name": "bsview",
+  "version": "1.0.0",
+  "description": "A Battlescribe roster viewer (Warhammer 40000)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gminteer@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^9.0.5",
+    "express": "^4.17.1",
+    "pug": "^3.0.0",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "prettier": "^2.0.5"
+  }
+}
