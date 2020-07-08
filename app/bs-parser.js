@@ -15,7 +15,7 @@ function getCosts(rawCosts) {
   return costs;
 }
 /**
- * Extracts roster metadata from xml->js parsed roster
+ * Extracts roster metadata from the xml->js parsed roster
  * @param {Object} parsedXml The xml->js parsed roster
  * @return {Object} An extracted roster metadata object (roster attributes, cost nodes, and costLimit nodes)
  */
