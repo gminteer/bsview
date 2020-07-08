@@ -1,6 +1,8 @@
 const {app, BrowserWindow} = require('electron');
+// eslint-disable-next-line no-unused-vars
 const {express} = require('./app');
 
+// eslint-disable-next-line require-jsdoc
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -13,10 +15,10 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length == 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform != 'darwin') app.quit();
+  if (process.platform !== 'darwin') app.quit();
 });
