@@ -38,19 +38,19 @@ function getProfiles(rawProfiles, count = 1) {
   else raw = [rawProfiles];
 
   for (const profile of raw) {
-    const out = Object.assign({}, profile.$);
-    out.count = count;
-    out.cells = [];
+    const row = Object.assign({}, profile.$);
+    row.count = count;
+    row.cells = [];
     let characteristics = profile.characteristics.characteristic;
     if (!Array.isArray(characteristics)) characteristics = [characteristics];
     for (const characteristic of characteristics) {
       const cell = Object.assign({}, characteristic.$);
       if (characteristic._) cell.value = characteristic._;
       else cell.value = cell.name;
-      out.cells.push(cell);
+      row.cells.push(cell);
     }
-    if (Object.keys(profiles).includes(out.typeId)) profiles[out.typeId].push(out);
-    else profiles[out.typeId] = [out];
+    if (Object.keys(profiles).includes(row.typeId)) profiles[row.typeId].push(row);
+    else profiles[row.typeId] = [row];
   }
   return profiles;
 }
@@ -62,12 +62,12 @@ function getProfiles(rawProfiles, count = 1) {
  */
 function mergeTables(a, b) {
   // helper for getTables()
-  const out = Object.assign({}, a);
+  const merged = Object.assign({}, a);
   for (const key of Object.keys(b)) {
-    if (out[key]) out[key] = out[key].concat(b[key]);
-    else out[key] = b[key];
+    if (merged[key]) merged[key] = merged[key].concat(b[key]);
+    else merged[key] = b[key];
   }
-  return out;
+  return merged;
 }
 /**
  * Flattens nested selections from a selection object and extracts tables (collections of profiles/characteristics matching
@@ -103,7 +103,7 @@ function getTables(selection) {
 /**
  * Extracts categories from the xml -> js processed category nodes
  * @param {Object | Array} rawCategories The raw xml -> js category node
- * @return {Array} An array of category objects (category object has a typeId, a name, and a isPrimaryCategory pseudo-boolean)
+ * @return {Array} An array of category objects (a category object has a typeId, a name, and a isPrimaryCategory pseudo-boolean)
  */
 function getCategories(rawCategories) {
   const categories = [];
@@ -147,27 +147,27 @@ function getForce(forceRaw) {
   if (forceRaw.costs) force.costs = getCosts(forceRaw.costs.cost);
   if (forceRaw.rules) force.rules = getRules(forceRaw.rules.rule);
   for (const selection of forceRaw.selections.selection) {
-    const out = Object.assign({}, selection.$);
+    const unit = Object.assign({}, selection.$);
     if (selection.selections) {
-      out.selections = [];
+      unit.selections = [];
       let subs = selection.selections.selection;
       if (!Array.isArray(subs)) subs = [subs];
-      for (const subSelection of subs) out.selections.push(subSelection.$.name);
+      for (const subSelection of subs) unit.selections.push(subSelection.$.name);
     }
-    if (selection.costs) out.costs = getCosts(selection.costs.cost);
-    if (selection.categories) out.categories = getCategories(selection.categories.category);
+    if (selection.costs) unit.costs = getCosts(selection.costs.cost);
+    if (selection.categories) unit.categories = getCategories(selection.categories.category);
     const tables = getTables(selection);
     if (Object.keys(tables).length < 1) {
       // hacky, but it works (Battlescribe has pseudo-rules that are in the file as type "unit" selections with one nested sub-selection)
-      if (out.selections) out.description = out.selections[0];
-      force.rules.push(out);
+      if (unit.selections) unit.description = unit.selections[0];
+      force.rules.push(unit);
       continue;
     } else {
-      out.tables = tables;
+      unit.tables = tables;
     }
     // extract column names
-    out.tableColumns = {};
-    for (const table of Object.values(out.tables)) {
+    unit.tableColumns = {};
+    for (const table of Object.values(unit.tables)) {
       const t0 = table[0];
       const tableType = {
         name: t0.typeName,
@@ -180,9 +180,9 @@ function getForce(forceRaw) {
         columns[column.typeId] = copy;
       }
       if (Object.keys(columns).length > 0) tableType.columns = columns;
-      if (Object.keys(tableType).length > 0) out.tableColumns[tableType.id] = tableType;
+      if (Object.keys(tableType).length > 0) unit.tableColumns[tableType.id] = tableType;
     }
-    force.units[out.id] = out;
+    force.units[unit.id] = unit;
   }
   // generate unitsByCategory
   force.categoryNames = {};
